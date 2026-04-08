@@ -5,6 +5,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "msgqueue.h"
 
 struct cpu cpus[NCPU];
 
@@ -124,7 +125,12 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
-
+  
+  initlock(&p->mq.lock, "msgqueue");
+  p->mq.head  = 0;
+  p->mq.tail  = 0;
+  p->mq.count = 0;
+  
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
     freeproc(p);
