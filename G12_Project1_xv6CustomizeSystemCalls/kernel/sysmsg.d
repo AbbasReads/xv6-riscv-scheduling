@@ -1,0 +1,3 @@
+kernel/sysmsg.o: kernel/sysmsg.c kernel/types.h kernel/riscv.h \
+ kernel/defs.h kernel/param.h kernel/spinlock.h kernel/proc.h \
+ kernel/msgqueue.h
