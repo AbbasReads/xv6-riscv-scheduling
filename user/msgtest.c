@@ -4,24 +4,30 @@
 
 int main(void)
 {
-    int pid = fork();
-
-    if (pid == 0) {
-        // child: receive
+    // fork child 1
+    int pid1 = fork();
+    if (pid1 == 0) {
         char buf[256];
         int sender = recvmsg(buf, sizeof(buf));
-        printf("Child got from pid %d: %s\n", sender, buf);
-        exit(0);
-    } else {
-        // parent: send
-        sendmsg(pid, "hello child", 12);
-        wait(0);
-
-        // broadcast
-        char bmsg[] = "broadcast test";
-        int n = broadcast(bmsg, sizeof(bmsg));
-        printf("Parent broadcast to %d processes\n", n);
-
+        printf("Child 1 got broadcast from pid %d: %s\n", sender, buf);
         exit(0);
     }
+
+    // fork child 2
+    int pid2 = fork();
+    if (pid2 == 0) {
+        char buf[256];
+        int sender = recvmsg(buf, sizeof(buf));
+        printf("Child 2 got broadcast from pid %d: %s\n", sender, buf);
+        exit(0);
+    }
+
+    // parent broadcasts
+    char bmsg[] = "hello everyone";
+    int n = broadcast(bmsg, sizeof(bmsg));
+    printf("Parent broadcast to %d processes\n", n);
+
+    wait(0);
+    wait(0);
+    exit(0);
 }
