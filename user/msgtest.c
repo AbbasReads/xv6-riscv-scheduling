@@ -4,7 +4,6 @@
 
 int main(void)
 {
-    // fork child 1
     int pid1 = fork();
     if (pid1 == 0) {
         char buf[256];
@@ -13,7 +12,6 @@ int main(void)
         exit(0);
     }
 
-    // fork child 2
     int pid2 = fork();
     if (pid2 == 0) {
         char buf[256];
@@ -22,7 +20,9 @@ int main(void)
         exit(0);
     }
 
-    // parent broadcasts
+    // small delay so children are ready
+    for(volatile int i = 0; i < 1000000; i++);
+
     char bmsg[] = "hello everyone";
     int n = broadcast(bmsg, sizeof(bmsg));
     printf("Parent broadcast to %d processes\n", n);
