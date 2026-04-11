@@ -54,36 +54,16 @@ a priority based scheduler that:
 
 ## Execution Output
 
-[Insert Screenshot here]
+<img width="603" height="884" alt="rmstest" src="https://github.com/user-attachments/assets/1f7bcdd2-c271-40da-a1f7-5cc42afe06a6" />
 
-===========================================
-Rate Monotonic Scheduling (RMS) Demo
-Creating 3 tasks with different periods:
-T1: period=4  (highest priority)
-T2: period=6  (medium priority)
-T3: period=12 (lowest priority)
-Task T1 started | period=4 priority=250
-Task T1 | burst unit 1/2 done
-Task T1 | burst unit 2/2 done
-Task T1 completed!
-Task T2 started | period=6 priority=166
-Task T2 | burst unit 1/3 done
-Task T2 | burst unit 2/3 done
-Task T2 | burst unit 3/3 done
-Task T2 completed!
-Task T3 started | period=12 priority=83
-Task T3 | burst unit 1/4 done
-Task T3 | burst unit 2/4 done
-Task T3 | burst unit 3/4 done
-Task T3 | burst unit 4/4 done
-Task T3 completed!
-All tasks completed!
-RMS scheduling ensured shortest period ran first.
+<img width="1375" height="734" alt="rms_output" src="https://github.com/user-attachments/assets/e878db40-847e-4108-9fbe-4090b529dad1" />
 
 ## How to Run
 
 make clean
+
 make qemu CPUS=1
+
 rmstest
 
 ## Key Design Decisions
