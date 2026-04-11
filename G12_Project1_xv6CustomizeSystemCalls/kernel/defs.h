@@ -183,3 +183,9 @@ void            virtio_disk_intr(void);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+
+// shared memory
+int             shmget(int, int);
+uint64          shmat(int);
+int             shmdt(int);
+int             shmctl(int);
