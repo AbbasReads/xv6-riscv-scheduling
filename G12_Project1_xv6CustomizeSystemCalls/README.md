@@ -91,9 +91,11 @@ locktry: tried to acquire free lock, result: 1 (1=success)
 Lock test complete!
 
 ---
+## Lock Program
+<img width="1919" height="1020" alt="lock_program" src="https://github.com/user-attachments/assets/cd549e9b-2f31-4413-bf30-754e34ddcd3d" />
 
-## Screenshot
-[Attach screenshot of execution here]
+## Output
+<img width="1919" height="1017" alt="lock_output" src="https://github.com/user-attachments/assets/171ebfb4-17ec-4466-94c5-35b6a452f706" />
 
 ---
 
