@@ -104,4 +104,13 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  int queue;                   // current MLFQ queue level (0,1,2)
+  int quantumleft;             // remaining quantum ticks
+  int mlfq_ticks;              // total ticks used in current queue
 };
+
+// MLFQ Scheduling
+#define NMLFQ 3              // number of queues
+#define Q0_QUANTUM 1         // highest priority queue quantum
+#define Q1_QUANTUM 2         // medium priority queue quantum
+#define Q2_QUANTUM 4         // lowest priority queue quantum
