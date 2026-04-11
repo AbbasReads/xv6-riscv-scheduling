@@ -104,4 +104,8 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+int deadline;        // process deadline in ticks
+int arrivaltime;     // time when process arrived
 };
+// EDF Scheduling
+#define DEFAULT_DEADLINE 100  // default deadline in ticks
