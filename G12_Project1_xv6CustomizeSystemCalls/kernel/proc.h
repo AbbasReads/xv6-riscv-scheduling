@@ -105,3 +105,13 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 };
+
+// User space lock structure
+#define MAX_LOCKS 16
+
+struct userlock {
+  int id;        // lock id
+  int held;      // 1 if held, 0 if free
+  int pid;       // pid of process holding lock
+  int valid;     // is this entry valid?
+};
