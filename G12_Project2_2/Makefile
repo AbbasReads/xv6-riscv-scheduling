@@ -18,6 +18,7 @@ OBJS = \
   $K/trap.o \
   $K/syscall.o \
   $K/sysproc.o \
+  $K/sysproc_rms.o \
   $K/bio.o \
   $K/fs.o \
   $K/log.o \
@@ -29,6 +30,7 @@ OBJS = \
   $K/kernelvec.o \
   $K/plic.o \
   $K/virtio_disk.o
+
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-
 # perhaps in /opt/riscv/bin
