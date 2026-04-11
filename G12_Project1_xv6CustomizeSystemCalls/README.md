@@ -1,10 +1,5 @@
 # Project 1: Custom System Calls in xv6 (Shared Memory)
 
-## Student Details
-- **Name:** Meghana
-- **Branch:** Meghana
-- **Project:** xv6 Custom System Calls - Shared Memory
-
 ---
 
 ## Introduction
@@ -76,16 +71,24 @@ $ shmtest
 
 ## Expected Output
 shmget: created shared memory with id 1
+
 shmat: attached shared memory at address 0x0000000000004000
+
 wrote to shared memory: Hi!
+
 shmdt: detached shared memory
+
 shmctl: deleted shared memory
+
 Shared memory test complete!
 
 ---
 
-## Screenshot
-[Attach screenshot of execution here]
+ ## shmtest program
+<img width="1905" height="1016" alt="shmtest_program" src="https://github.com/user-attachments/assets/a33a85a9-1b8d-4b53-9269-bdfbb216c86a" />
+
+ ## output
+<img width="1915" height="1007" alt="shmtest_output" src="https://github.com/user-attachments/assets/fb00084b-06e7-4b0a-960a-c650bedff85f" /> 
 
 ---
 
