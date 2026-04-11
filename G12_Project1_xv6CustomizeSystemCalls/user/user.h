@@ -27,6 +27,7 @@ int uptime(void);
 int getprocsinfo(void);
 int getppid(void);
 int sleep2(int);
+int signal(void (*handler)(void));
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);

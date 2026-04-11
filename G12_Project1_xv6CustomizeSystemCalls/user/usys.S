@@ -120,3 +120,8 @@ sleep2:
  li a7, SYS_sleep2
  ecall
  ret
+.global signal
+signal:
+ li a7, SYS_signal
+ ecall
+ ret

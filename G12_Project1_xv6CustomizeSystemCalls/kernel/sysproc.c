@@ -89,11 +89,21 @@ uint64
 sys_kill(void)
 {
   int pid;
-
   argint(0, &pid);
+
   return kkill(pid);
 }
+uint64
+sys_signal(void)
+{
+  uint64 handler;
+  argaddr(1, &handler);
 
+  struct proc *p = myproc();
+  p->handler = (void (*)())handler;
+
+  return 0;
+}
 // return how many clock tick interrupts have occurred
 // since start.
 uint64

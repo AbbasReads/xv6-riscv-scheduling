@@ -23,3 +23,4 @@
 #define SYS_getprocsinfo 22
 #define SYS_getppid 23
 #define SYS_sleep2 24
+#define SYS_signal 25

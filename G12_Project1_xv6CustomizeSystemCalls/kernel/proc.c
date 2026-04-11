@@ -118,6 +118,8 @@ allocproc(void)
     } else {
       release(&p->lock);
     }
+p->signal_pending = 0;
+p->handler = 0;
   }
   return 0;
 
@@ -441,11 +443,19 @@ scheduler(void)
     for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
       if(p->state == RUNNABLE) {
+        if(p->signal_pending){
+        p->signal_pending = 0;
+        printf("Signal received!\n");
+        }
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
         // before jumping back to us.
         p->state = RUNNING;
         c->proc = p;
+       if(p->signal_pending && p->handler){
+        p->signal_pending = 0;
+        p->handler();
+        }
         swtch(&c->context, &p->context);
 
         // Process is done running for now.
@@ -589,15 +599,14 @@ wakeup(void *chan)
 // Kill the process with the given pid.
 // The victim won't exit until it tries to return
 // to user space (see usertrap() in trap.c).
-int
-kkill(int pid)
+int kkill(int pid)
 {
   struct proc *p;
 
   for(p = proc; p < &proc[NPROC]; p++){
     acquire(&p->lock);
     if(p->pid == pid){
-      p->killed = 1;
+      p->signal_pending = 1;
       if(p->state == SLEEPING){
         // Wake process from sleep().
         p->state = RUNNABLE;

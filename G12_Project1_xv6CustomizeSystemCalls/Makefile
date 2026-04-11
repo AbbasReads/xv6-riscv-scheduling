@@ -147,7 +147,8 @@ UPROGS=\
 	$U/_dorphan\
 	$U/_test_procs\
 	$U/_test_getppid\
-	$U/_test_sleep2
+	$U/_test_sleep2\
+        $U/_testsignal
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
