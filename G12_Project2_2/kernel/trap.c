@@ -81,9 +81,28 @@ usertrap(void)
     kexit(-1);
 
   // give up the CPU if this is a timer interrupt.
-  if(which_dev == 2)
-    yield();
+// MLFQ quantum handling
+if(which_dev == 2){
+  struct proc *p = myproc();
+  p->quantumleft--;
+  p->mlfq_ticks++;
 
+  if(p->quantumleft <= 0){
+    // move process to lower queue
+    if(p->queue < NMLFQ - 1){
+      p->queue++;
+    }
+    // reset quantum for new queue
+    if(p->queue == 0)
+      p->quantumleft = Q0_QUANTUM;
+    else if(p->queue == 1)
+      p->quantumleft = Q1_QUANTUM;
+    else
+      p->quantumleft = Q2_QUANTUM;
+
+    yield();
+  }
+}
   prepare_return();
 
   // the user page table to switch to, for trampoline.S
