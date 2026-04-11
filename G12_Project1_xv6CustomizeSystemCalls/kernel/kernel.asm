@@ -1708,10 +1708,20 @@ push_off(void)
     80000be8:	e822                	sd	s0,16(sp)
     80000bea:	e426                	sd	s1,8(sp)
     80000bec:	1000                	addi	s0,sp,32
+
+static inline uint64
+r_sstatus()
+{
+  uint64 x;
   asm volatile("csrr %0, sstatus" : "=r" (x) );
     80000bee:	100027f3          	csrr	a5,sstatus
     80000bf2:	84be                	mv	s1,a5
     80000bf4:	100027f3          	csrr	a5,sstatus
+
+// disable device interrupts
+static inline void
+intr_off()
+{
   w_sstatus(r_sstatus() & ~SSTATUS_SIE);
     80000bf8:	9bf5                	andi	a5,a5,-3
   asm volatile("csrw sstatus, %0" : : "r" (x));
@@ -1739,6 +1749,11 @@ push_off(void)
     80000c18:	8082                	ret
     mycpu()->intena = old;
     80000c1a:	4fb000ef          	jal	80001914 <mycpu>
+// are device interrupts enabled?
+static inline int
+intr_get()
+{
+  uint64 x = r_sstatus();
   return (x & SSTATUS_SIE) != 0;
     80000c1e:	0014d793          	srli	a5,s1,0x1
     80000c22:	8b85                	andi	a5,a5,1
@@ -3785,6 +3800,11 @@ cpuid()
     80001902:	e406                	sd	ra,8(sp)
     80001904:	e022                	sd	s0,0(sp)
     80001906:	0800                	addi	s0,sp,16
+// this core's hartid (core number), the index into cpus[].
+static inline uint64
+r_tp()
+{
+  uint64 x;
   asm volatile("mv %0, tp" : "=r" (x) );
     80001908:	8512                	mv	a0,tp
   int id = r_tp();
