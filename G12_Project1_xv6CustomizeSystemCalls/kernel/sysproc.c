@@ -107,3 +107,120 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// Lock table
+struct userlock locktable[MAX_LOCKS];
+
+int
+lockinit(int id)
+{
+  for(int i = 0; i < MAX_LOCKS; i++){
+    if(locktable[i].valid && locktable[i].id == id)
+      return id;
+  }
+  for(int i = 0; i < MAX_LOCKS; i++){
+    if(!locktable[i].valid){
+      locktable[i].id = id;
+      locktable[i].held = 0;
+      locktable[i].pid = -1;
+      locktable[i].valid = 1;
+      return id;
+    }
+  }
+  return -1;
+}
+
+int
+lockacquire(int id)
+{
+  for(int i = 0; i < MAX_LOCKS; i++){
+    if(locktable[i].valid && locktable[i].id == id){
+      if(locktable[i].held)
+        return -1;
+      locktable[i].held = 1;
+      locktable[i].pid = myproc()->pid;
+      return 0;
+    }
+  }
+  return -1;
+}
+
+int
+lockrelease(int id)
+{
+  for(int i = 0; i < MAX_LOCKS; i++){
+    if(locktable[i].valid && locktable[i].id == id){
+      if(!locktable[i].held)
+        return -1;
+      locktable[i].held = 0;
+      locktable[i].pid = -1;
+      return 0;
+    }
+  }
+  return -1;
+}
+
+int
+locktry(int id)
+{
+  for(int i = 0; i < MAX_LOCKS; i++){
+    if(locktable[i].valid && locktable[i].id == id){
+      if(locktable[i].held)
+        return 0;
+      locktable[i].held = 1;
+      locktable[i].pid = myproc()->pid;
+      return 1;
+    }
+  }
+  return -1;
+}
+
+int
+lockcheck(int id)
+{
+  for(int i = 0; i < MAX_LOCKS; i++){
+    if(locktable[i].valid && locktable[i].id == id)
+      return locktable[i].held;
+  }
+  return -1;
+}
+
+uint64
+sys_lockinit(void)
+{
+  int id;
+  argint(0, &id);
+  return lockinit(id);
+}
+
+uint64
+sys_lockacquire(void)
+{
+  int id;
+  argint(0, &id);
+  return lockacquire(id);
+}
+
+uint64
+sys_lockrelease(void)
+{
+  int id;
+  argint(0, &id);
+  return lockrelease(id);
+}
+
+uint64
+sys_locktry(void)
+{
+  int id;
+  argint(0, &id);
+  return locktry(id);
+}
+
+uint64
+sys_lockcheck(void)
+{
+  int id;
+  argint(0, &id);
+  return lockcheck(id);
+}
