@@ -1,7 +1,7 @@
 #include "kernel/types.h"
 #include "kernel/stat.h"
 #include "user/user.h"
-
+#include "kernel/fcntl.h"
 // CPU bound process - uses full quantum
 void cpu_bound(int n)
 {
@@ -16,7 +16,8 @@ void io_bound(int n)
 {
   for(int i = 0; i < n; i++){
     printf("io_bound: iteration %d\n", i);
-    sleep(1);  // simulate IO wait
+    // simulate IO wait with busy loop
+    for(volatile int j = 0; j < 1000000; j++);
   }
 }
 

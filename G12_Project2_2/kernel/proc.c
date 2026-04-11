@@ -110,9 +110,6 @@ static struct proc*
 allocproc(void)
 {
   struct proc *p;
-  p->queue = 0;           // start at highest priority queue
-  p->quantumleft = Q0_QUANTUM;
-  p->mlfq_ticks = 0;
   for(p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
     if(p->state == UNUSED) {
@@ -125,7 +122,10 @@ allocproc(void)
 
 found:
   p->pid = allocpid();
-  p->state = USED;
+  p->queue = 0;
+p->quantumleft = Q0_QUANTUM;
+p->mlfq_ticks = 0;
+p->state = USED;
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
