@@ -13,10 +13,11 @@ ensuring time critical processes meet their deadlines.
 
 ## How EDF Works
 
-Each process is assigned a deadline
-Scheduler always picks process with smallest deadline
-Real-time guarantee: critical tasks always run first
-setdeadline() syscall lets processes set their own deadline
+Each process is assigned a deadline.
+Scheduler always picks process with smallest deadline.
+Real-time guarantee: critical tasks always run first,
+setdeadline() syscall lets processes set their own deadline.
+
 ---
 
 ## Files Modified
@@ -68,7 +69,13 @@ $ edftest
 ---
 
 ## Screenshot
-[Attach screenshot of execution here]
+
+### Program
+<img width="714" height="907" alt="edf" src="https://github.com/user-attachments/assets/d07df9ce-e306-4ecc-8e0d-07b41f59369d" />
+
+### Output
+<img width="530" height="486" alt="edf_output" src="https://github.com/user-attachments/assets/8acc0fa8-1e7c-49b9-aa05-017013245b7b" />
+
 
 ---
 
