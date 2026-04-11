@@ -107,3 +107,11 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+uint64
+sys_setdeadline(void)
+{
+  int deadline;
+  argint(0, &deadline);
+  myproc()->deadline = deadline;
+  return 0;
+}
