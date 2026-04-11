@@ -107,3 +107,98 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// Shared memory array
+struct sharedmem shmtable[MAX_SHAREDMEM];
+
+int
+shmget(int id, int size)
+{
+  for(int i = 0; i < MAX_SHAREDMEM; i++){
+    if(shmtable[i].valid && shmtable[i].id == id)
+      return id;
+  }
+  for(int i = 0; i < MAX_SHAREDMEM; i++){
+    if(!shmtable[i].valid){
+      shmtable[i].id = id;
+      shmtable[i].size = size;
+      shmtable[i].refcount = 0;
+      shmtable[i].addr = (uint64)kalloc();
+      shmtable[i].valid = 1;
+      return id;
+    }
+  }
+  return -1;
+}
+
+uint64
+shmat(int id)
+{
+  for(int i = 0; i < MAX_SHAREDMEM; i++){
+    if(shmtable[i].valid && shmtable[i].id == id){
+      shmtable[i].refcount++;
+      return shmtable[i].addr;
+    }
+  }
+  return -1;
+}
+
+int
+shmdt(int id)
+{
+  for(int i = 0; i < MAX_SHAREDMEM; i++){
+    if(shmtable[i].valid && shmtable[i].id == id){
+      shmtable[i].refcount--;
+      return 0;
+    }
+  }
+  return -1;
+}
+
+int
+shmctl(int id)
+{
+  for(int i = 0; i < MAX_SHAREDMEM; i++){
+    if(shmtable[i].valid && shmtable[i].id == id){
+      if(shmtable[i].refcount == 0){
+        kfree((void*)shmtable[i].addr);
+        shmtable[i].valid = 0;
+        return 0;
+      }
+    }
+  }
+  return -1;
+}
+
+uint64
+sys_shmget(void)
+{
+  int id, size;
+  argint(0, &id);
+  argint(1, &size);
+  return shmget(id, size);
+}
+
+uint64
+sys_shmat(void)
+{
+  int id;
+  argint(0, &id);
+  return shmat(id);
+}
+
+uint64
+sys_shmdt(void)
+{
+  int id;
+  argint(0, &id);
+  return shmdt(id);
+}
+
+uint64
+sys_shmctl(void)
+{
+  int id;
+  argint(0, &id);
+  return shmctl(id);
+}
