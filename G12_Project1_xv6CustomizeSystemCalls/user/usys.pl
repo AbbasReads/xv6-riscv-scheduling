@@ -42,3 +42,8 @@ entry("getpid");
 entry("sbrk");
 entry("pause");
 entry("uptime");
+entry("lockinit");
+entry("lockacquire");
+entry("lockrelease");
+entry("locktry");
+entry("lockcheck");
