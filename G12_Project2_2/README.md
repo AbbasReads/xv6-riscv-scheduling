@@ -1,10 +1,5 @@
 # Project 2: MLFQ Scheduling in xv6
 
-## Student Details
-- **Name:** Satyakanth
-- **Branch:** satya-branch
-- **Project:** Multilevel Feedback Queue (MLFQ) Scheduling
-
 ---
 
 ## Introduction
@@ -17,12 +12,17 @@ by dynamically adjusting process priorities based on their CPU usage behavior.
 ## How MLFQ Works
 
 Queue 0 (Highest Priority) → quantum = 1 tick
+
 Queue 1 (Medium Priority)  → quantum = 2 ticks
+
 Queue 2 (Lowest Priority)  → quantum = 4 ticks
 
 All processes start at Queue 0
+
 If process uses full quantum → moves down to lower queue
+
 CPU bound processes sink to lower queues
+
 IO bound processes stay at higher queues
 
 ---
@@ -67,8 +67,13 @@ $ mlfqtest
 
 ---
 
-## Screenshot
-[Attach screenshot of execution here]
+## Screenshots
+### Program
+<img width="633" height="865" alt="Screenshot 2026-04-12 032108" src="https://github.com/user-attachments/assets/aef8e558-c82f-413c-aa31-b5f1b1711804" />
+
+### Output
+<img width="1914" height="610" alt="Screenshot 2026-04-12 031112" src="https://github.com/user-attachments/assets/41cf0d22-e3d5-4d9e-984b-01dff2d99338" />
+
 
 ---
 
