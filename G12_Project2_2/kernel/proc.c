@@ -20,6 +20,15 @@ static void freeproc(struct proc *p);
 
 extern char trampoline[]; // trampoline.S
 
+static uint rand_state = 1;
+
+static uint
+krand(void)
+{
+  rand_state = rand_state * 1664525 + 1013904223;
+  return rand_state;
+}
+
 // helps ensure that wakeups of wait()ing
 // parents are not lost. helps obey the
 // memory model when using p->parent.
@@ -123,6 +132,8 @@ allocproc(void)
 
 found:
   p->pid = allocpid();
+  p->tickets = 10;
+  p->sched_count = 0;
   p->state = USED;
 
   // Allocate a trapframe page.
@@ -168,6 +179,8 @@ freeproc(struct proc *p)
   p->chan = 0;
   p->killed = 0;
   p->xstate = 0;
+  p->tickets = 0;
+  p->sched_count = 0;
   p->state = UNUSED;
 }
 
@@ -274,6 +287,7 @@ kfork(void)
     release(&np->lock);
     return -1;
   }
+  np->tickets = p->tickets;
   np->sz = p->sz;
 
   // copy saved user registers.
@@ -414,6 +428,37 @@ kwait(uint64 addr)
   }
 }
 
+int
+set_tickets(int n)
+{
+  if(n <= 0)
+    return -1;
+
+  struct proc *p = myproc();
+  acquire(&p->lock);
+  p->tickets = n;
+  release(&p->lock);
+  return 0;
+}
+
+int
+get_schedcount(int pid)
+{
+  struct proc *p;
+
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->state != UNUSED && p->pid == pid) {
+      int count = p->sched_count;
+      release(&p->lock);
+      return count;
+    }
+    release(&p->lock);
+  }
+
+  return -1;
+}
+
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
 // Scheduler never returns.  It loops, doing:
@@ -437,28 +482,52 @@ scheduler(void)
     intr_on();
     intr_off();
 
-    int found = 0;
+    int count = 0;
+    int total = 0;
+    struct proc *runnable[NPROC];
+    int cumulative[NPROC];
+
     for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
       if(p->state == RUNNABLE) {
-        // Switch to chosen process.  It is the process's job
-        // to release its lock and then reacquire it
-        // before jumping back to us.
-        p->state = RUNNING;
-        c->proc = p;
-        swtch(&c->context, &p->context);
-
-        // Process is done running for now.
-        // It should have changed its p->state before coming back.
-        c->proc = 0;
-        found = 1;
+        int t = p->tickets;
+        if(t < 1)
+          t = 1;
+        runnable[count] = p;
+        cumulative[count] = total + t;
+        total = cumulative[count];
+        count++;
       }
       release(&p->lock);
     }
-    if(found == 0) {
+
+    if(count == 0) {
       // nothing to run; stop running on this core until an interrupt.
       asm volatile("wfi");
+      continue;
     }
+
+    int ticket_no = (krand() % total) + 1;
+    struct proc *winner = 0;
+    for(int i = 0; i < count; i++) {
+      if(cumulative[i] >= ticket_no) {
+        winner = runnable[i];
+        break;
+      }
+    }
+
+    if(winner == 0)
+      continue;
+
+    acquire(&winner->lock);
+    if(winner->state == RUNNABLE) {
+      winner->state = RUNNING;
+      winner->sched_count++;
+      c->proc = winner;
+      swtch(&c->context, &winner->context);
+      c->proc = 0;
+    }
+    release(&winner->lock);
   }
 }
 

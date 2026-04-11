@@ -23,6 +23,22 @@ sys_getpid(void)
 }
 
 uint64
+sys_settickets(void)
+{
+  int n;
+  argint(0, &n);
+  return set_tickets(n);
+}
+
+uint64
+sys_getschedcount(void)
+{
+  int pid;
+  argint(0, &pid);
+  return get_schedcount(pid);
+}
+
+uint64
 sys_fork(void)
 {
   return kfork();
