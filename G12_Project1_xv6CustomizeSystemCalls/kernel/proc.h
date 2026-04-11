@@ -105,3 +105,14 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 };
+
+// Shared memory structure
+#define MAX_SHAREDMEM 16
+
+struct sharedmem {
+  int id;                  // shared memory id
+  uint64 addr;             // physical address
+  int size;                // size of shared memory
+  int refcount;            // number of processes using it
+  int valid;               // is this entry valid?
+};
