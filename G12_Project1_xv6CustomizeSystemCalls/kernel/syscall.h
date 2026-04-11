@@ -20,3 +20,8 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+#define SYS_lockinit     22
+#define SYS_lockacquire  23
+#define SYS_lockrelease  24
+#define SYS_locktry      25
+#define SYS_lockcheck    26
