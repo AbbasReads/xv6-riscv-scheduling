@@ -18,7 +18,7 @@ main(void)
 
   // Attach shared memory
   char *addr = (char*)shmat(shmid);
-  if((int64)addr < 0){
+  if((uint64)addr == (uint64)-1){
     printf("shmat failed\n");
     exit(1);
   }

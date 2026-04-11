@@ -134,10 +134,16 @@ shmget(int id, int size)
 uint64
 shmat(int id)
 {
+  struct proc *p = myproc();
   for(int i = 0; i < MAX_SHAREDMEM; i++){
     if(shmtable[i].valid && shmtable[i].id == id){
       shmtable[i].refcount++;
-      return shmtable[i].addr;
+      // map physical address to process virtual address space
+      uint64 va = PGROUNDUP(p->sz);
+      if(mappages(p->pagetable, va, PGSIZE, shmtable[i].addr, PTE_R|PTE_W|PTE_U) < 0)
+        return -1;
+      p->sz = va + PGSIZE;
+      return va;
     }
   }
   return -1;
