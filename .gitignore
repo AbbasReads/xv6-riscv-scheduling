@@ -1,0 +1,23 @@
+# xv6 build outputs
+**/fs.img
+**/kernel/kernel
+**/mkfs/mkfs
+.gdbinit
+
+# Generated objects/dependency files
+*.o
+*.d
+
+# Generated disassembly/symbol dumps
+*.asm
+*.sym
+
+# Generated syscall stubs
+**/user/usys.S
+
+# Core dumps and local temp artifacts
+core
+core.*
+*.tmp
+*.swp
+.DS_Store

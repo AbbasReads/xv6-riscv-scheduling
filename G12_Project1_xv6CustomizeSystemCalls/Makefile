@@ -28,7 +28,8 @@ OBJS = \
   $K/sysfile.o \
   $K/kernelvec.o \
   $K/plic.o \
-  $K/virtio_disk.o
+  $K/virtio_disk.o \
+  $K/sysmsg.o
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-
 # perhaps in /opt/riscv/bin
@@ -145,7 +146,8 @@ UPROGS=\
 	$U/_logstress\
 	$U/_forphan\
 	$U/_dorphan\
-        $U/_shmtest
+	$U/_shmtest\
+	$U/_sclimit
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
 
@@ -189,7 +191,12 @@ print-gdbport:
 
 QEMU_VERSION := $(shell $(QEMU) --version | head -n 1 | sed -E 's/^QEMU emulator version ([0-9]+\.[0-9]+)\..*/\1/')
 check-qemu-version:
-	@if [ "$(shell echo "$(QEMU_VERSION) >= $(MIN_QEMU_VERSION)" | bc)" -eq 0 ]; then \
+	@min="$(MIN_QEMU_VERSION)"; cur="$(QEMU_VERSION)"; \
+	if [ -z "$$cur" ]; then \
+		echo "WARNING: Could not determine qemu version; skipping version check."; \
+		exit 0; \
+	fi; \
+	if [ "$$(printf '%s\n%s\n' "$$min" "$$cur" | sort -V | head -n1)" != "$$min" ]; then \
 		echo "ERROR: Need qemu version >= $(MIN_QEMU_VERSION)"; \
 		exit 1; \
 	fi

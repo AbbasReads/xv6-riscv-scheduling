@@ -1,3 +1,6 @@
+#include "param.h"
+#include "riscv.h"
+#include "types.h"
 // Saved registers for kernel context switches.
 struct context {
   uint64 ra;
@@ -20,10 +23,10 @@ struct context {
 
 // Per-CPU state.
 struct cpu {
-  struct proc *proc;          // The process running on this cpu, or null.
-  struct context context;     // swtch() here to enter scheduler().
-  int noff;                   // Depth of push_off() nesting.
-  int intena;                 // Were interrupts enabled before push_off()?
+  struct proc *proc;      // The process running on this cpu, or null.
+  struct context context; // swtch() here to enter scheduler().
+  int noff;               // Depth of push_off() nesting.
+  int intena;             // Were interrupts enabled before push_off()?
 };
 
 extern struct cpu cpus[NCPU];
@@ -81,19 +84,24 @@ struct trapframe {
 
 enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
+#include "msgqueue.h"
+
 // Per-process state
 struct proc {
   struct spinlock lock;
 
   // p->lock must be held when using these:
-  enum procstate state;        // Process state
-  void *chan;                  // If non-zero, sleeping on chan
-  int killed;                  // If non-zero, have been killed
-  int xstate;                  // Exit status to be returned to parent's wait
-  int pid;                     // Process ID
-
+  enum procstate state; // Process state
+  void *chan;           // If non-zero, sleeping on chan
+  int killed;           // If non-zero, have been killed
+  int xstate;           // Exit status to be returned to parent's wait
+  int pid;              // Process ID
+  int tickets;          // Lottery tickets
+  int child_limit;
+  int child_count;
+  
   // wait_lock must be held when using this:
-  struct proc *parent;         // Parent process
+  struct proc *parent; // Parent process
 
   // these are private to the process, so p->lock need not be held.
   uint64 kstack;               // Virtual address of kernel stack
@@ -104,15 +112,27 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  void (*handler)(int);        // Signal handler
+  struct msgqueue mq;          // Message queue
 };
 
 // Shared memory structure
 #define MAX_SHAREDMEM 16
 
 struct sharedmem {
-  int id;                  // shared memory id
-  uint64 addr;             // physical address
-  int size;                // size of shared memory
-  int refcount;            // number of processes using it
-  int valid;               // is this entry valid?
+  int id;       // shared memory id
+  uint64 addr;  // physical address
+  int size;     // size of shared memory
+  int refcount; // number of processes using it
+  int valid;    // is this entry valid?
+};
+
+// User lock structure
+#define MAX_LOCKS 16
+
+struct userlock {
+  int id;
+  int held;
+  int pid;
+  int valid;
 };

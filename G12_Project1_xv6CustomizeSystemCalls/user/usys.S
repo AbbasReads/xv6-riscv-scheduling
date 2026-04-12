@@ -55,6 +55,66 @@ shmctl:
  li a7, SYS_shmctl
  ecall
  ret
+.global lockinit
+lockinit:
+ li a7, SYS_lockinit
+ ecall
+ ret
+.global lockacquire
+lockacquire:
+ li a7, SYS_lockacquire
+ ecall
+ ret
+.global lockrelease
+lockrelease:
+ li a7, SYS_lockrelease
+ ecall
+ ret
+.global locktry
+locktry:
+ li a7, SYS_locktry
+ ecall
+ ret
+.global lockcheck
+lockcheck:
+ li a7, SYS_lockcheck
+ ecall
+ ret
+.global sendmsg
+sendmsg:
+ li a7, SYS_sendmsg
+ ecall
+ ret
+.global recvmsg
+recvmsg:
+ li a7, SYS_recvmsg
+ ecall
+ ret
+.global broadcast
+broadcast:
+ li a7, SYS_broadcast
+ ecall
+ ret
+.global getprocsinfo
+getprocsinfo:
+ li a7, SYS_getprocsinfo
+ ecall
+ ret
+.global getppid
+getppid:
+ li a7, SYS_getppid
+ ecall
+ ret
+.global sleep2
+sleep2:
+ li a7, SYS_sleep2
+ ecall
+ ret
+.global signal
+signal:
+ li a7, SYS_signal
+ ecall
+ ret
 .global kill
 kill:
  li a7, SYS_kill
@@ -123,5 +183,10 @@ pause:
 .global uptime
 uptime:
  li a7, SYS_uptime
+ ecall
+ ret
+.global setchildlimit
+setchildlimit:
+ li a7, SYS_setchildlimit
  ecall
  ret

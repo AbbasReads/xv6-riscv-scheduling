@@ -1,3 +1,3 @@
-kernel/proc.o: kernel/proc.c kernel/types.h kernel/param.h \
- kernel/memlayout.h kernel/riscv.h kernel/spinlock.h kernel/proc.h \
- kernel/defs.h
+kernel/proc.o: kernel/proc.c kernel/proc.h kernel/param.h kernel/riscv.h \
+ kernel/types.h kernel/msgqueue.h kernel/spinlock.h kernel/defs.h \
+ kernel/memlayout.h
