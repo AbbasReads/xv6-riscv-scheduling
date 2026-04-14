@@ -1,9 +1,10 @@
-# xv6 Project Repository
+# xv6-riscv Projects
 
-This repository contains two separate xv6-riscv project directories built from
-the same course codebase and then modified for different assignments.
+This repo contains two course project trees based on xv6-riscv.
 
-- [G12_Project1_xv6CustomizeSystemCalls](/home/abbas/Desktop/xv6-riscv/G12_Project1_xv6CustomizeSystemCalls) focuses on custom syscalls and their test programs.
-- [G12_Project2_2](/home/abbas/Desktop/xv6-riscv/G12_Project2_2): scheduling algorithms.
+## Projects
 
-Each project has its own README with project-specific details.
+- [G12_Project1_xv6CustomizeSystemCalls](/home/abbas/Desktop/xv6-riscv/G12_Project1_xv6CustomizeSystemCalls): custom system calls and user-space tests
+- [G12_Project2_2](/home/abbas/Desktop/xv6-riscv/G12_Project2_2): scheduler changes
+
+Each project directory has its own README with build and feature details.
