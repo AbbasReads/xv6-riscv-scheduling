@@ -147,7 +147,12 @@ UPROGS=\
 	$U/_forphan\
 	$U/_dorphan\
 	$U/_shmtest\
-	$U/_sclimit
+	$U/_sclimit\
+	$U/_childlimittest\
+	$U/_locktest\
+	$U/_msgtest\
+	$U/_proctest\
+	$U/_signaltest
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
 

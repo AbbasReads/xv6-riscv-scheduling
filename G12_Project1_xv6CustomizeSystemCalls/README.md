@@ -1,108 +1,99 @@
-# Project 1: Custom System Calls in xv6 (Shared Memory)
+# Project 1: Custom System Calls in xv6
 
----
+This directory is the project-one xv6 tree. Compared with upstream xv6 at
+commit `5474d4bf72fd95a6e5c735c2d7f208f58990ceab`, project one extends the
+syscall layer in:
 
-## Introduction
-This project implements shared memory system calls in the xv6 operating system.
-Shared memory allows multiple processes to communicate by accessing the same
-memory region, which is a form of Inter-Process Communication (IPC).
+- `kernel/syscall.h`
+- `kernel/syscall.c`
+- `kernel/sysproc.c`
+- `kernel/sysmsg.c`
+- `user/user.h`
+- `user/usys.pl`
 
----
+The project now also includes user-space demo and smoke-test programs for the
+custom syscall families so a fresh build places them in `fs.img`.
 
-## System Calls Implemented
+## Added Syscalls Over Original xv6
 
-### 1. shmget(int id, int size)
-- Creates a new shared memory segment
-- Returns the shared memory id on success, -1 on failure
+| Syscall(s) | Purpose | Main implementation files | Test program(s) |
+| --- | --- | --- | --- |
+| `shmget`, `shmat`, `shmdt`, `shmctl` | Shared memory IPC | `kernel/sysproc.c`, `kernel/proc.h`, `kernel/defs.h` | `shmtest` |
+| `lockinit`, `lockacquire`, `lockrelease`, `locktry`, `lockcheck` | Simple user-visible lock table | `kernel/sysproc.c`, `kernel/proc.h` | `locktest` |
+| `sendmsg`, `recvmsg`, `broadcast` | Message-queue-based IPC between processes | `kernel/sysmsg.c`, `kernel/msgqueue.h`, `kernel/proc.h` | `msgtest` |
+| `getprocsinfo`, `getppid`, `sleep2` | Process inspection and alternate sleep helper | `kernel/sysproc.c` | `proctest` |
+| `setchildlimit` | Limit the number of live child processes a process may have | `kernel/sysproc.c`, `kernel/proc.c`, `kernel/proc.h` | `childlimittest`, `sclimit` |
+| `signal` | Register a handler pointer in the process struct | `kernel/sysproc.c`, `kernel/proc.h` | `signaltest` |
 
-### 2. shmat(int id)
-- Attaches shared memory segment to process virtual address space
-- Returns virtual address of shared memory on success, -1 on failure
+## Modified xv6 Syscall Interfaces
 
-### 3. shmdt(int id)
-- Detaches shared memory segment from process
-- Returns 0 on success, -1 on failure
+These are not brand-new syscall numbers compared with upstream xv6, but the
+interface in this tree differs from stock xv6 and is worth calling out.
 
-### 4. shmctl(int id)
-- Deletes shared memory segment when no process is using it
-- Returns 0 on success, -1 on failure
+| Upstream xv6 | Project-one tree | How to exercise it |
+| --- | --- | --- |
+| `sleep(int ticks)` | Renamed to `pause(int ticks)` in this tree | `usertests`, `setchildlimittest`, `msgtest` |
+| `sbrk(int n)` | Kernel side accepts `sbrk(int n, int mode)` and user wrappers expose eager/lazy growth helpers | `usertests` |
 
----
+## User Programs Included In `fs.img`
 
-## Files Modified
+Fresh builds now include the following project-one syscall demos:
 
-| File | Changes Made |
-|------|-------------|
-| kernel/proc.h | Added sharedmem struct and MAX_SHAREDMEM definition |
-| kernel/defs.h | Added shared memory function declarations |
-| kernel/syscall.h | Added syscall numbers for shared memory calls |
-| kernel/syscall.c | Registered shared memory syscalls |
-| kernel/sysproc.c | Implemented shared memory syscall logic |
-| user/usys.pl | Added user space stubs |
-| user/user.h | Added user space declarations |
-| user/shmtest.c | Demo program for shared memory |
-| Makefile | Added shmtest to build |
+- `shmtest`
+- `locktest`
+- `msgtest`
+- `proctest`
+- `childlimittest`
+- `sclimit`
+- `signaltest`
 
----
+## How To Run
 
-## How to Run
+From this directory:
 
-### Prerequisites
-- RISC-V gcc compiler
-- QEMU emulator
-- make
-
-### Steps
 ```bash
-# Clone the repository
-git clone https://github.com/AbbasReads/xv6-riscv-scheduling.git
-cd xv6-riscv-scheduling
-git checkout meghana-branch
-cd G12_Project1_xv6CustomizeSystemCalls
-
-# Build and run xv6
 make qemu
-
-# Inside xv6 shell run
-$ shmtest
 ```
 
----
+Inside the xv6 shell:
 
-## Expected Output
-shmget: created shared memory with id 1
+```text
+$ shmtest
+$ locktest
+$ msgtest
+$ proctest
+$ childlimittest
+$ signaltest
+```
 
-shmat: attached shared memory at address 0x0000000000004000
+Notes:
 
-wrote to shared memory: Hi!
+- `msgtest` exercises `sendmsg`, `recvmsg`, and `broadcast` together.
+- `proctest` exercises `getppid`, `sleep2`, and `getprocsinfo` together.
+- `childlimittest` is the xv6-safe runnable name for the child-limit test.
+  The longer source file `setchildlimittest.c` is still present in the tree,
+  but the executable name must stay within xv6's directory entry limit.
+- `sclimit` is an additional child-limit regression test.
+- `signaltest` is a registration smoke test. In the current project-one tree,
+  the kernel stores the handler pointer but does not implement a full signal
+  delivery path that invokes it.
 
-shmdt: detached shared memory
+## Expected High-Level Results
 
-shmctl: deleted shared memory
+- `shmtest` should create, attach, write, detach, and delete a shared memory
+  segment.
+- `locktest` should report that lock acquire/release and `locktry` behavior
+  work as expected across parent/child processes.
+- `msgtest` should verify one direct message and one broadcast round.
+- `proctest` should verify the parent PID, sleep for at least the requested
+  number of ticks, and print a process table snapshot.
+- `childlimittest` should show that forks fail once the configured child
+  limit is reached and succeed again after children are reaped.
 
-Shared memory test complete!
+## Summary
 
----
-
- ## shmtest program
-<img width="1905" height="1016" alt="shmtest_program" src="https://github.com/user-attachments/assets/a33a85a9-1b8d-4b53-9269-bdfbb216c86a" />
-
- ## output
-<img width="1915" height="1007" alt="shmtest_output" src="https://github.com/user-attachments/assets/fb00084b-06e7-4b0a-960a-c650bedff85f" /> 
-
----
-
-## How Shared Memory Works in xv6
-
-1. **shmget** allocates a physical memory page using kalloc()
-2. **shmat** maps physical page to process virtual address space using mappages()
-3. Process can read/write to virtual address directly
-4. **shmdt** decrements reference count
-5. **shmctl** frees physical memory using kfree() when refcount is 0
-
----
-
-## References
-- xv6 RISC-V book: https://pdos.csail.mit.edu/6.828/2023/xv6/book-riscv-rev3.pdf
-- MIT xv6 source: https://github.com/mit-pdos/xv6-riscv
-- xv6 system call implementation guide
+Using `5474d4bf72fd95a6e5c735c2d7f208f58990ceab` as the upstream xv6 baseline,
+project one adds or customizes shared memory, user locks, message passing,
+process-inspection helpers, signal registration, child-limit enforcement, and
+the `pause`/`sbrk` interface changes listed above. The README and `Makefile`
+now line up with those syscall changes and the available test programs.
