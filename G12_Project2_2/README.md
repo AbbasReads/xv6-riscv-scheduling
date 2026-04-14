@@ -1,31 +1,27 @@
-# xv6 Modifications: Syscalls and Scheduling
+# Project 2: Scheduling Changes in xv6
 
-This repository extends base xv6 in two main areas: system calls and process scheduling.
+This xv6 tree is focused on scheduling behavior. The kernel code in this
+project implements a lottery scheduler in place of the default xv6 runnable
+process selection logic.
 
-## Syscall-related changes
+## Implemented Scheduler
 
-- Added a new syscall `pause(int ticks)` (`SYS_pause = 13`) that blocks the calling process for a number of timer ticks.
-- Extended `sbrk` handling to support two allocation modes through `sys_sbrk(int n, int type)`:
-  - `SBRK_EAGER`: allocate pages immediately (classic xv6 behavior).
-  - `SBRK_LAZY`: grow virtual size now, allocate pages on first access.
-- Added user-space helpers:
-  - `sbrk(int n)` now calls eager mode.
-  - `sbrklazy(int n)` calls lazy mode.
-- Updated syscall wiring (number table, dispatcher mapping, user stubs, and user prototypes) to include the new/changed syscall interfaces.
+### Lottery Scheduling
 
-## Scheduling-related changes
+The active scheduler implementation is in [kernel/proc.c](/home/abbas/Desktop/xv6-riscv/G12_Project2_2/kernel/proc.c) and uses per-process ticket counts to choose the next runnable process.
 
-- Replaced the default runnable-process selection with a **lottery scheduler**.
-- Added per-process scheduling metadata:
-  - `tickets` (weight for lottery selection).
-  - `sched_count` (how many times the process has been scheduled).
-- Default process ticket count is initialized to `10`, and children inherit the parent ticket count on `fork`.
-- On each scheduling round:
-  - Gather runnable processes and cumulative ticket totals.
-  - Draw a random winning ticket.
-  - Run the selected process and increment its `sched_count`.
+Relevant code-level changes:
 
-## Notes
-
-- Lazy allocation support is integrated with trap/memory code so page faults on lazily reserved pages allocate memory on demand.
-- Copy paths used by syscall argument/data transfer are updated to handle lazily allocated pages when needed.
+- [kernel/proc.h](/home/abbas/Desktop/xv6-riscv/G12_Project2_2/kernel/proc.h) adds:
+  - `tickets`
+  - `sched_count`
+- [kernel/proc.c](/home/abbas/Desktop/xv6-riscv/G12_Project2_2/kernel/proc.c) initializes:
+  - `tickets = 10`
+  - `sched_count = 0`
+- Child processes inherit the parent ticket count during `fork`.
+- The scheduler:
+  - scans the `RUNNABLE` processes
+  - sums their effective ticket counts
+  - draws a winning ticket with `krand()`
+  - selects the process whose cumulative ticket range contains that draw
+  - increments `sched_count` when the process is chosen to run
