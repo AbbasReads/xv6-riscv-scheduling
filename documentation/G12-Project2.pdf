@@ -1,0 +1,118 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 2 /Kids [ 7 0 R 9 0 R ] >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+6 0 obj
+<< /Length 4153 >>
+stream
+BT /F2 18 Tf 1 0 0 1 50 794.00 Tm (Project 2 Documentation) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 762.00 Tm (Project: G12_Project2_2) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 746.00 Tm (Scope: scheduler-focused xv6 tree with an active lottery scheduler and two included reference/demo) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 732.00 Tm (sources for MLFQ and RMS concepts.) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 716.00 Tm (1. Overview) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 688.00 Tm (In the current integrated-kernel tree, the active kernel scheduler remains the lottery scheduler) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 674.00 Tm (implemented in kernel/proc.c. The project also includes two reference files from other branches:) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 660.00 Tm (mlfq.c from 24je0651 and user/rmstest.c from Yashwanth.) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 644.00 Tm (These reference files are included for documentation and experimentation. They do not replace or) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 630.00 Tm (modify the active kernel scheduler in this tree.) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 614.00 Tm (2. Active kernel implementation) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 586.00 Tm (- Scheduler type: lottery scheduling) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 570.00 Tm (- Main implementation file: kernel/proc.c) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 554.00 Tm (- Per-process scheduler state: tickets and sched_count in kernel/proc.h) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 538.00 Tm (- Default ticket value: 10 per process during allocation) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 522.00 Tm (- Fork behavior: child processes inherit parent ticket count) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 506.00 Tm (- Selection path: scheduler sums runnable tickets, draws a winning ticket, and runs the) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 492.00 Tm (  matching process) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 476.00 Tm (2.1 Lottery scheduler logic) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 451.00 Tm (The scheduler scans all RUNNABLE processes, normalizes the effective ticket count, computes) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 437.00 Tm (cumulative ticket ranges, and uses a pseudo-random draw to select the winning range. The selected) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 423.00 Tm (process then runs until it yields or blocks. sched_count records how many times a process is) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 409.00 Tm (chosen.) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 393.00 Tm (3. Reference scheduling sources) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 365.00 Tm (3.1 MLFQ reference source) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 340.00 Tm (mlfq.c is a standalone mock simulation sourced from branch 24je0651. It models a 3-level) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 326.00 Tm (multi-level feedback queue with time quanta of 1, 2, and 4 ticks.) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 310.00 Tm (- Tracked state: arrival time, burst time, remaining time, completion time, turnaround time,) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 296.00 Tm (  waiting time, queue level, queue ticks) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 280.00 Tm (- Behavior: always search higher queues first, execute one unit of work, and demote a process) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 266.00 Tm (  when its current queue quantum is exhausted) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 250.00 Tm (- Purpose: compact reference for queue movement and accounting without kernel integration) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 234.00 Tm (3.2 RMS demo source) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 209.00 Tm (user/rmstest.c is a reference demo sourced from branch Yashwanth. It models three periodic tasks) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 195.00 Tm (with different periods and derived priorities to illustrate a rate-monotonic style setup.) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 179.00 Tm (- T1: period 4, derived priority 250, burst 2) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 163.00 Tm (- T2: period 6, derived priority 166, burst 3) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 147.00 Tm (- T3: period 12, derived priority 83, burst 4) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 131.00 Tm (- Purpose: source-level RMS demonstration only; not wired into the active scheduler in this) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 117.00 Tm (  tree) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 101.00 Tm (4. Features) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 73.00 Tm (- Active lottery scheduler in the kernel) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 2455 >>
+stream
+BT /F1 10 Tf 1 0 0 1 60 794.00 Tm (- Per-process ticket accounting and schedule counters) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 778.00 Tm (- Included MLFQ reference source for alternative-policy study) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 762.00 Tm (- Included RMS demo source for alternative-policy study) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 746.00 Tm (- Clean separation between active scheduler code and reference/demo material) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 730.00 Tm (5. Testing and validation) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 702.00 Tm (Testing for Project 2 is split between the active kernel scheduler and the included reference) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 688.00 Tm (sources.) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 672.00 Tm (- Active scheduler: build and run xv6 under CPU contention to observe lottery selection) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 658.00 Tm (  behavior) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 642.00 Tm (- MLFQ reference file: compile and run as a host-side C program if a standalone simulation is) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 628.00 Tm (  needed) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 612.00 Tm (- RMS reference file: review or adapt the source if RMS-specific task behavior needs to be) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 598.00 Tm (  demonstrated in a separate integration branch) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 582.00 Tm (The current tree does not switch the kernel scheduler to MLFQ or RMS. Those models remain) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 568.00 Tm (documentation and reference material unless additional integration work is performed.) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 552.00 Tm (6. Build and execution) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 524.00 Tm (cd G12_Project2_2) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 512.00 Tm (make qemu) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 498.00 Tm (This builds and runs the active lottery-scheduler xv6 tree.) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 482.00 Tm (7. File map) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 454.00 Tm (- kernel/proc.c: active lottery scheduler implementation) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 438.00 Tm (- kernel/proc.h: per-process scheduler state fields) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 422.00 Tm (- mlfq.c: standalone MLFQ mock simulation from 24je0651) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 406.00 Tm (- user/rmstest.c: RMS demo source from Yashwanth) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 390.00 Tm (- README.md: short project summary for the current integrated-kernel state) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 374.00 Tm (Generated from the current repository state on 2026-04-14.) Tj ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 8 0 R >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000129 00000 n 
+0000000199 00000 n 
+0000000274 00000 n 
+0000000342 00000 n 
+0000004547 00000 n 
+0000004693 00000 n 
+0000007200 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+7346
+%%EOF

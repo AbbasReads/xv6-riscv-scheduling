@@ -17,6 +17,6 @@ The active kernel scheduler remains the original `integrated-kernel` project2 im
 
 From this directory:
 
-```bash
+```bash`
 make qemu
 ```

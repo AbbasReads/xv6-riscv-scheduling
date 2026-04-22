@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define MAX 10
 
@@ -77,5 +78,5 @@ int main() {
                p[i].ct, p[i].tat, p[i].wt);
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

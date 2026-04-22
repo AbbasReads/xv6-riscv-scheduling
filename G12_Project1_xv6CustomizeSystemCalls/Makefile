@@ -152,6 +152,8 @@ UPROGS=\
 	$U/_locktest\
 	$U/_msgtest\
 	$U/_proctest\
+	$U/_getppidtest\
+	$U/_sleep2test\
 	$U/_signaltest
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

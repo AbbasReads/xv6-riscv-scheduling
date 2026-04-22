@@ -1,42 +1,83 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-static void
-task(char *name, int period, int burst)
+#define NTASKS 3
+
+struct task {
+  const char *name;
+  int period;
+  int burst;
+  int remaining;
+  int next_release;
+  int jobs_done;
+};
+
+static int
+priority(const struct task *t)
 {
-  printf("Task %s | period=%d | priority=%d\n", name, period, 1000 / period);
+  return 1000 / t->period;
+}
 
-  for (int i = 0; i < burst; i++) {
-    for (volatile int j = 0; j < 1000000; j++)
-      ;
-    printf("Task %s | burst %d/%d\n", name, i + 1, burst);
+static int
+pick_task(struct task tasks[], int now)
+{
+  int best = -1;
+
+  for(int i = 0; i < NTASKS; i++){
+    if(tasks[i].remaining == 0 && now >= tasks[i].next_release)
+      tasks[i].remaining = tasks[i].burst;
+
+    if(tasks[i].remaining == 0)
+      continue;
+
+    if(best < 0 || tasks[i].period < tasks[best].period)
+      best = i;
   }
 
-  exit(0);
+  return best;
 }
 
 int
 main(void)
 {
+  struct task tasks[NTASKS] = {
+    { "T1", 4, 1, 0, 0, 0 },
+    { "T2", 6, 2, 0, 0, 0 },
+    { "T3", 12, 3, 0, 0, 0 },
+  };
+  int total_ticks = 24;
+
   printf("RMS demo reference\n");
-  printf("T1: period=4\n");
-  printf("T2: period=6\n");
-  printf("T3: period=12\n");
+  printf("Shorter period means higher static priority.\n\n");
 
-  if (fork() == 0)
-    task("T1", 4, 2);
+  for(int i = 0; i < NTASKS; i++){
+    printf("Task %s | period=%d | burst=%d | priority=%d\n",
+           tasks[i].name, tasks[i].period, tasks[i].burst,
+           priority(&tasks[i]));
+  }
 
-  if (fork() == 0)
-    task("T2", 6, 3);
+  printf("\nTimeline:\n");
 
-  if (fork() == 0)
-    task("T3", 12, 4);
+  for(int now = 0; now < total_ticks; now++){
+    int selected = pick_task(tasks, now);
 
-  wait(0);
-  wait(0);
-  wait(0);
+    if(selected < 0){
+      printf("Time %d: Idle\n", now);
+      continue;
+    }
 
-  printf("Demo complete\n");
-  exit(0);
+    printf("Time %d: %s\n", now, tasks[selected].name);
+
+    tasks[selected].remaining--;
+    if(tasks[selected].remaining == 0){
+      tasks[selected].jobs_done++;
+      tasks[selected].next_release += tasks[selected].period;
+    }
+  }
+
+  printf("\nSummary:\n");
+  for(int i = 0; i < NTASKS; i++)
+    printf("%s completed jobs=%d\n", tasks[i].name, tasks[i].jobs_done);
+
+  return EXIT_SUCCESS;
 }

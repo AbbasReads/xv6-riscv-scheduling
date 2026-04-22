@@ -1,0 +1,134 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 2 /Kids [ 7 0 R 9 0 R ] >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+6 0 obj
+<< /Length 4247 >>
+stream
+BT /F2 18 Tf 1 0 0 1 50 794.00 Tm (Project 1 Documentation) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 762.00 Tm (Project: G12_Project1_xv6CustomizeSystemCalls) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 746.00 Tm (Scope: xv6-riscv extension with custom system calls, user-facing kernel services, and dedicated) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 732.00 Tm (user-space tests.) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 716.00 Tm (1. Overview) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 688.00 Tm (Project 1 extends xv6 in three main areas: inter-process communication, process management, and) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 674.00 Tm (memory management. The implementation adds new system calls, registers them in the syscall table,) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 660.00 Tm (exposes wrappers in user space, and includes test programs that run from the xv6 shell.) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 644.00 Tm (The tree also changes two existing interfaces. The exposed sleep call is pause\(int ticks\), and the) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 630.00 Tm (memory-growth path supports eager and lazy allocation modes through the sbrk wrapper layer.) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 614.00 Tm (2. Features) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 586.00 Tm (- Shared memory: shmget, shmat, shmdt, shmctl) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 570.00 Tm (- User-visible locks: lockinit, lockacquire, lockrelease, locktry, lockcheck) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 554.00 Tm (- Message queue IPC: sendmsg, recvmsg, broadcast) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 538.00 Tm (- Process utilities: getprocsinfo, getppid, sleep2) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 522.00 Tm (- Child limit control: setchildlimit) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 506.00 Tm (- Signal registration: signal) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 490.00 Tm (- Memory interface changes: pause plus eager/lazy sbrk support) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 474.00 Tm (3. Implementation) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 446.00 Tm (3.1 Syscall integration) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 421.00 Tm (The syscall path follows normal xv6 structure. kernel/syscall.h assigns syscall numbers,) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 407.00 Tm (kernel/syscall.c registers handlers, user/user.h exposes declarations, and user/usys.pl generates) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 393.00 Tm (the trap stubs used by user programs.) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 377.00 Tm (3.2 Shared memory) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 352.00 Tm (Shared memory support is implemented in kernel/sysproc.c with supporting process metadata in) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 338.00 Tm (kernel/proc.h and declarations in kernel/defs.h. The interface supports segment creation,) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 324.00 Tm (attachment, detachment, and deletion.) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 308.00 Tm (The shmtest program validates the full lifecycle by creating a segment, attaching it, writing to) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 294.00 Tm (it, detaching it, and deleting it.) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 278.00 Tm (3.3 User lock table) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 253.00 Tm (The lock subsystem exposes a small lock table to user processes. A caller can initialize a lock) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 239.00 Tm (identifier, acquire it, attempt a non-blocking acquire, release it, and query whether the lock is) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 225.00 Tm (currently held.) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 209.00 Tm (locktest exercises success paths, busy-state reporting, and re-acquisition after release.) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 193.00 Tm (3.4 Message passing) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 168.00 Tm (Message queue support is implemented in kernel/sysmsg.c. The interface provides direct) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 154.00 Tm (parent-to-child style delivery through sendmsg and recvmsg, plus multi-recipient delivery through) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 140.00 Tm (broadcast.) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 124.00 Tm (msgtest checks both direct delivery and broadcast delivery to multiple child processes.) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 108.00 Tm (3.5 Process utilities) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 83.00 Tm (getppid returns the parent PID, sleep2 provides alternate kernel tick-based sleeping, and) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 69.00 Tm (getprocsinfo exposes process state information for inspection or debugging.) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 3667 >>
+stream
+BT /F1 10 Tf 1 0 0 1 50 794.00 Tm (proctest validates these utilities together by checking parent identity, measuring sleep duration,) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 780.00 Tm (and invoking the process-info path.) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 764.00 Tm (3.6 Child limit enforcement) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 739.00 Tm (setchildlimit adds a per-process cap on live children. The kernel checks this limit on the process) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 725.00 Tm (creation path rather than introducing a separate process-management subsystem.) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 709.00 Tm (childlimittest and sclimit cover denial when the limit is reached and normal recovery after) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 695.00 Tm (children exit and are reaped.) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 679.00 Tm (3.7 Signal registration) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 654.00 Tm (The signal syscall stores a handler pointer in process state. The current tree supports) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 640.00 Tm (registration only. It does not implement full asynchronous signal delivery or automatic handler) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 626.00 Tm (invocation.) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 610.00 Tm (signaltest confirms registration success and documents the implementation boundary.) Tj ET
+BT /F2 12 Tf 1 0 0 1 50 594.00 Tm (3.8 Memory management changes) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 569.00 Tm (The user library routes sbrk through sys_sbrk with an allocation mode so the tree can expose both) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 555.00 Tm (eager allocation and lazy allocation through sbrklazy. usertests contains additional coverage for) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 541.00 Tm (these paths.) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 525.00 Tm (4. Testing) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 497.00 Tm (- shmtest: shared memory create, attach, write, detach, delete) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 481.00 Tm (- locktest: lock initialization, acquire, busy detection, release, retry) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 465.00 Tm (- msgtest: direct message delivery and broadcast delivery) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 449.00 Tm (- proctest: getppid, sleep2, getprocsinfo) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 433.00 Tm (- childlimittest and sclimit: child-limit enforcement and boundary behavior) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 417.00 Tm (- signaltest: signal registration path) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 401.00 Tm (- usertests: broader regression coverage, including pause and memory-growth behavior) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 385.00 Tm (5. Build and execution) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 357.00 Tm (cd G12_Project1_xv6CustomizeSystemCalls) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 345.00 Tm (make qemu) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 333.00 Tm () Tj ET
+BT /F3 9 Tf 1 0 0 1 62 321.00 Tm (Inside xv6:) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 309.00 Tm ($ shmtest) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 297.00 Tm ($ locktest) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 285.00 Tm ($ msgtest) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 273.00 Tm ($ proctest) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 261.00 Tm ($ childlimittest) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 249.00 Tm ($ sclimit) Tj ET
+BT /F3 9 Tf 1 0 0 1 62 237.00 Tm ($ signaltest) Tj ET
+BT /F2 14 Tf 1 0 0 1 50 223.00 Tm (6. Deliverables) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 195.00 Tm (- Kernel-side custom syscall implementations) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 179.00 Tm (- User-space syscall wrappers and trap stubs) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 163.00 Tm (- Feature-specific test programs included in fs.img) Tj ET
+BT /F1 10 Tf 1 0 0 1 60 147.00 Tm (- Modified process and memory-management behavior required by the assignment) Tj ET
+BT /F1 10 Tf 1 0 0 1 50 131.00 Tm (Generated from the current repository state on 2026-04-14.) Tj ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 8 0 R >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000129 00000 n 
+0000000199 00000 n 
+0000000274 00000 n 
+0000000342 00000 n 
+0000004641 00000 n 
+0000004787 00000 n 
+0000008506 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+8652
+%%EOF
