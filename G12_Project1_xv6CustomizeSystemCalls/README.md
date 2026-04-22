@@ -47,8 +47,11 @@ Returns the sender's PID on success, -1 on failure.
 Sends the same message to ALL currently running processes 
 except the sender itself.
 And most importantly it also broadcasts to 2 background running processes as shown below :-
+ 
  sh -> the xv6 shell
+ 
  init -> the init process(xv6 invoke this first process when it boots and then starts 'sh' shell)
+
 Returns the number of processes the message was sent to.
 
 ---
@@ -69,38 +72,54 @@ The queue is a circular buffer with:
 ## Execution 1 — sendmsg and recvmsg
 
 Parent process forks a child.
+
 Parent sends "hello child" directly to child using sendmsg.
+
 Child was blocked on recvmsg, wakes up and prints the message.
+
 Parent then broadcasts to all running processes.
 
-[Insert Code1 Screenshot here]
+<img width="1710" height="1112" alt="Code1" src="https://github.com/user-attachments/assets/77a61750-9e24-4479-93fc-5b9f68376b41" />
 
-Output:
+
+## Output:
+
 Child got from pid 3: hello child
+
 Parent broadcast to 3 processes
 
-[Insert output1 ss here]
+<img width="1710" height="1112" alt="Output1" src="https://github.com/user-attachments/assets/c05bb732-7608-4b6c-a653-5b0ad2fbb52e" />
+
 ---
 
 ## Execution 2 — broadcast to multiple processes
 
 Parent forks two children, both blocking on recvmsg.
+
 Parent broadcasts "hello everyone" to all running processes.
+
 Both children wake up and print the received message.
 
-[Insert Code2 Screenshot here]
+<img width="1710" height="1112" alt="Code2" src="https://github.com/user-attachments/assets/855ebaa6-7a68-4e03-84b0-cefedbe573e7" />
 
-Output:
+
+## Output:
+
 Parent broadcast to 4 processes
+
 Child 1 got broadcast from pid 3: hello everyone
+
 Child 2 got broadcast from pid 3: hello everyone
 
-[Insert output2 ss here]
+<img width="1710" height="1112" alt="Output2" src="https://github.com/user-attachments/assets/c772b880-60cb-4ca6-9872-25a9a5520ae6" />
+
 ---
 
 ## How to Run
 make clean
-make qemu
+
+make qemu CPUS=1
+
 msgtest (inside shell)
 
 ---
